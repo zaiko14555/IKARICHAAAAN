@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ikram Blog</title>
+<style>
+  body {
+    margin: 0;
+    font-family: 'Comic Sans MS', cursive;
+    background: linear-gradient(to bottom, #ffe6f9, #fff);
+    color: #444;
+    overflow-x: hidden;
+  }
+
+  /* Stars */
+  .star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: white;
+    border-radius: 50%;
+    opacity: 0.8;
+    animation: twinkle 2s infinite alternate;
+  }
+  @keyframes twinkle {
+    from {opacity: 0.2; transform: translateY(0);}
+    to {opacity: 1; transform: translateY(-5px);}
+  }
+
+  /* Sidebar toggle */
+  .sidebar-toggle {
+    position: fixed;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    background: #ffccf2;
+    border-radius: 15px 0 0 15px;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 1.5rem;
+    text-align: center;
+    z-index: 1000;
+    box-shadow: 0 0 15px rgba(255,182,217,0.6);
+  }
+
+  /* Sidebar page */
+  .sidebar-page {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(255,182,217,0.95);
+    backdrop-filter: blur(5px);
+    z-index: 999;
+    padding: 50px 20px;
+    overflow-y: auto;
+  }
+  .sidebar-page h2 {
+    text-align: center;
+    color: #ff3399;
+    margin-bottom: 20px;
+  }
+  .sidebar-page ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 auto;
+    max-width: 400px;
+    text-align: center;
+  }
+  .sidebar-page ul li {
+    margin: 10px 0;
+    font-weight: bold;
+    color: #ff66b2;
+    font-size: 1.2rem;
+    transition: transform 0.2s;
+  }
+  .sidebar-page ul li:hover { transform: scale(1.05); color: #ff0066; }
+
+  .close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 2rem;
+    cursor: pointer;
+    color: #ff0066;
+    font-weight: bold;
+  }
+  .sidebar-page button {
+    display:block;
+    margin:20px auto;
+    padding:10px 20px;
+    background:#ff66b2;
+    color:white;
+    border:none;
+    border-radius:25px;
+    cursor:pointer;
+    font-weight:bold;
+  }
+
+  header {
+    text-align: center;
+    padding: 30px 20px;
+    position: relative;
+  }
+  header img.logo {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 5px solid #ffb6d9;
+    box-shadow: 0 0 25px #ffb6d9, 0 0 35px rgba(255,182,217,0.6);
+  }
+
+  button.mode-toggle {
+    position: absolute;
+    top: 30px;
+    right: 20px;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.9rem;
+    background: #ff99cc;
+    color: white;
+    transition: 0.3s;
+  }
+  button.mode-toggle:hover { opacity: 0.8; }
+
+  section {
+    margin: 15px;
+    padding: 20px;
+    border-radius: 20px;
+    background: rgba(255,192,203,0.3);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    position: relative;
+    z-index: 1;
+  }
+  section h2 { margin-bottom: 10px; font-size: 1.4rem; color: #ff66b2; }
+
+  .gallery .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 15px;
+  }
+  .gallery img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 15px;
+    border: 2px solid #ffcce6;
+    background: white;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .gallery img:hover { transform: scale(1.05); box-shadow: 0 0 20px #ff99cc; }
+
+  /* Singers professional page */
+  .singers-page { display: none; padding: 20px; }
+  .singers-page .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
+    gap: 25px;
+  }
+  .card {
+    background: #ffe6f9;
+    border-radius: 20px;
+    overflow: hidden;
+    text-align: center;
+    box-shadow: 0 8px 20px rgba(255,0,153,0.3);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 25px rgba(255,0,153,0.5);
+  }
+  .card img { width: 100%; height: 250px; object-fit: cover; display: block; }
+  .card h3 { margin: 15px 0 5px; color: #ff66b2; }
+  .card p { margin: 0 15px 15px; font-size: 0.9rem; color: #333; }
+  .card a {
+    display: inline-block;
+    margin-bottom: 15px;
+    padding: 8px 15px;
+    background: #ff66b2;
+    color: white;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background 0.3s;
+  }
+  .card a:hover { background: #ff3399; }
+
+  footer {
+    text-align: center;
+    padding: 15px;
+    color: #888;
+    font-size: 0.8rem;
+    margin-top: 20px;
+  }
+
+  body.night {
+    background: linear-gradient(to bottom, #1a0b1f, #000);
+    color: #eee;
+  }
+  body.night section { background: rgba(255,255,255,0.05); box-shadow: 0 4px 15px rgba(255,255,255,0.1); }
+  body.night h2 { color: #ffb6ff; }
+
+</style>
+</head>
+<body>
+
+<div id="stars"></div>
+
+<div class="sidebar-toggle" onclick="openSidebar()">⋮</div>
+
+<div class="sidebar-page" id="sidebarPage">
+  <div class="close-btn" onclick="closeSidebar()">×</div>
+  <h2>Menu</h2>
+  <ul>
+    <li><a href="#" onclick="showMainPage()">Home</a></li>
+    <li><a href="#" onclick="showSingers()">Favorite Singers</a></li>
+  </ul>
+  <button onclick="closeSidebar()">Return to Site</button>
+</div>
+
+<header>
+  <img src="logo.jpg" alt="Logo" class="logo">
+  <button class="mode-toggle" onclick="toggleMode()">🌙 Night</button>
+</header>
+
+<!-- Main page -->
+<div id="mainPage">
+  <section class="about">
+    <h2>About Me</h2>
+    <p>
+      Hi! I’m <b>Ikram</b>, 15 years old. I love drawing, listening to The Weeknd & Billie Eilish,
+      and watching anime like <b>JoJo’s Bizarre Adventure</b>.  
+      I adore hats 🎩, the calmness of the night 🌌, and also I love playing <b>Roblox</b> 🎮.  
+      Even though I face bullying sometimes, I stay positive and express myself through art.
+    </p>
+  </section>
+
+  <section class="story">
+    <h2>My Story</h2>
+    <p>
+      Since I was a little kid, I always felt different. My love for music and art helped me escape from the
+      noise of the world. When people bullied me, I didn’t give up — instead, I drew my feelings on paper,
+      painted with colors, and listened to The Weeknd and Billie Eilish late at night.  
+      Anime, especially <b>JoJo’s Bizarre Adventure</b>, inspired me to stay strong, creative, and unique.
+      Every character showed me that even in a strange world, being yourself is the real power.  
+      Today, my drawings, my dreams, and my love for Roblox are my answer to all the negativity.  
+      I want to shine like the stars in the night sky, and to keep my soul filled with art, music, games, and love.
+    </p>
+  </section>
+
+  <section class="gallery">
+    <h2>My Gallery</h2>
+    <div class="grid">
+      <img src="me-cat.jpg" alt="Me & My Cat">
+      <img src="drawing.jpg" alt="My Drawing">
+      <img src="jojo.jpg" alt="Jojo Bizarre Adventure">
+      <img src="roblox.jpg" alt="Playing Roblox">
+    </div>
+  </section>
+</div>
+
+<!-- Singers page -->
+<div class="singers-page" id="singersPage">
+  <header>
+    <h1>My Favorite Singers</h1>
+    <p>Ikram's collection of artists I love 🎶✨</p>
+  </header>
+  <div class="container">
+    <div class="grid">
+      <div class="card">
+        <img src="theweeknd.jpg" alt="The Weeknd">
+        <h3>The Weeknd</h3>
+        <p>Canadian singer known for his unique voice and hits like 'Blinding Lights'.</p>
+        <a href="https://www.youtube.com/channel/UC0WP5P-ufpRfjbNrmOWwLBQ" target="_blank">Official YouTube</a>
+      </div>
+      <div class="card">
+        <img src="xxxtentacion.jpg" alt="XXXTentacion">
+        <h3>XXXTentacion</h3>
+        <p>American rapper and singer with raw emotion in his songs.</p>
+        <a href="https://www.youtube.com/channel/UCM9r1xn6s30OnlJWb-jc3Sw" target="_blank">Official YouTube</a>
+      </div>
+      <div class="card">
+        <img src="tvgirl.jpg" alt="TV Girl">
+        <h3>TV Girl</h3>
+        <p>Indie pop band with catchy melodies and vintage vibes.</p>
+        <a href="https://www.youtube.com/channel/UCakexY9Khc2vKLgrf29svzQ" target="_blank">Official YouTube</a>
+      </div>
+      <div class="card">
+        <img src="billieeilish.jpg" alt="Billie Eilish">
+        <h3>Billie Eilish</h3>
+        <p>Pop singer-songwriter with dark, emotional music and unique style.</p>
+        <a href="https://www.youtube.com/channel/UCiGm_E4ZwYSHV3bcW1pnSeQ" target="_blank">Official YouTube</a>
+      </div>
+      <div class="card">
+        <img src="kaliuchis.jpg" alt="Kali Uchis">
+        <h3>Kali Uchis</h3>
+        <p>Singer blending R&B, soul, and Latin influences.</p>
+        <a href="https://www.youtube.com/channel/UCQTuAezPu6MOpcIJ1Tz9dNA" target="_blank">Official YouTube</a>
+      </div>
+      <div class="card">
+        <img src="icespice.jpg" alt="Ice Spice">
+        <h3>Ice Spice</h3>
+        <p>Rising rapper with catchy flows and unique style.</p>
+        <a href="https://www.youtube.com/channel/UCJTqwQj5iTHYrko04PbGI9w" target="_blank">Official YouTube</a>
+      </div>
+      <div class="card">
+        <img src="dontoliver.jpg" alt="Don Toliver">
+        <h3>Don Toliver</h3>
+        <p>American rapper & singer with melodic trap vibes.</p>
+        <a href="https://www.youtube.com/channel/UCgT01FILdWB9BsXBXKjpQ7A" target="_blank">Official YouTube</a>
+      </div>
+      <div class="card">
+        <img src="d4vd.jpg" alt="D4vd">
+        <h3>D4vd</h3>
+        <p>Emotional singer-songwriter producing dreamy indie music.</p>
+        <a href="https://www.youtube.com/@d4vd" target="_blank">Official YouTube</a>
+      </div>
+      <div class="card">
+        <img src="shiloh.jpg" alt="Shiloh">
+        <h3>Shiloh</h3>
+        <p>Talented young artist with heartfelt songs and pop style.</p>
+        <a href="https://www.youtube.com/@Shiloh" target="_blank">Official YouTube</a>
+      </div>
+      <div class="card">
+        <img src="Doja Cat.jpeg" alt="Doja Cat">
+        <h3>Doja Cat</h3>
+        <p>Pop and rap singer known for hits and playful style.</p>
+        <a href="https://www.youtube.com/@DojaCat" target="_blank">Official YouTube</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>Made with 🌸 Anime Kawaii Style • Ikram’s Blog</p>
+</footer>
+
+<script>
+  // Night mode
+  function toggleMode() {
+    document.body.classList.toggle("night");
+    const btn = document.querySelector(".mode-toggle");
+    btn.textContent = document.body.classList.contains("night") ? "☀️ Light" : "🌙 Night";
+  }
+
+  // Sidebar
+  function openSidebar() { document.getElementById("sidebarPage").style.display = "block"; }
+  function closeSidebar() { document.getElementById("sidebarPage").style.display = "none"; }
+
+  // Stars animation
+  const starsContainer = document.getElementById("stars");
+  const numStars = 100;
+  for (let i = 0; i < numStars; i++) {
+    const star = document.createElement("div");
+    star.classList.add("star");
+    star.style.top = Math.random() * window.innerHeight + "px";
+    star.style.left = Math.random() * window.innerWidth + "px";
+    star.style.width = star.style.height = (Math.random() * 3 + 1) + "px";
+    star.style.animationDuration = (Math.random() * 3 + 1) + "s";
+    starsContainer.appendChild(star);
+  }
+
+  // Show singers page
+  function showSingers() {
+    document.getElementById("mainPage").style.display = "none";
+    document.getElementById("singersPage").style.display = "block";
+    closeSidebar();
+  }
+
+  // Show main page
+  function showMainPage() {
+    document.getElementById("singersPage").style.display = "none";
+    document.getElementById("mainPage").style.display = "block";
+    closeSidebar();
+  }
+
+</script>
+
+</body>
+</html>
